@@ -6,19 +6,18 @@ from rest_framework.exceptions import AuthenticationFailed
 User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length=255)
-    password = serializers.CharField(max_length=68, min_length=4, write_only=True)
-
+    password1 = serializers.CharField(max_length=68, min_length=4, write_only=True)
+    password2 = serializers.CharField(max_length=68, min_length=4, write_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'is_staff', 'is_student']
+        fields = ['username', 'password1', 'password2']
 
     def validate(self, attrs):
-        email = attrs.get('email', '')
+        username = attrs.get('username', '')
 
-        if not email:
-            raise serializers.ValidationError("User must have an Email")
+        if not username:
+            raise serializers.ValidationError("User must have a username")
 
         return attrs
 

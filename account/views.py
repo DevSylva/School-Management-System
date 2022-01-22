@@ -4,6 +4,7 @@ from rest_framework import status
 from .serializers import RegisterSerializer
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
+from django.http import HttpResponseRedirect, HttpResponse
 
 
 User = get_user_model()
@@ -20,10 +21,8 @@ class RegisterView(generics.GenericAPIView):
 
         user_data = serializer.data
 
-        return Response(
-            {
-                "user_data": user_data,
-                'Response': "User Created"
-            },
-            status=status.HTTP_201_CREATED
-            )
+        return Response(status=status.HTTP_201_CREATED)
+
+
+class AllUsersView(generics.GenericAPIView):
+    pass
