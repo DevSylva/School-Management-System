@@ -3,23 +3,27 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, username, password=None):
+    def create_user(self, email, user_name, first_name, last_name, password, **other_fields):
 
-        if not username:
-            raise ValueError("User must posses a Username.")
+        if not email:
+            raise ValueError(_('You must provide an email address.'))
 
-        # username = self.normalize_email(email)
-        user = self.model(username=username)
+        email = self.normalize_email(email)
+        user = self.model(email=email, user_name=user_name, first_name=first_name, last_name=last_name, **other_fields)
         user.set_password(password)
         user.save()
-
         return user
 
 
-    def create_superuser(self, username, password=None):
+    def create_superuser(self, email, user_name, first_name, last_name, password, **other_fields):
 
-        user = self.create_user(username, password=password)
-        user.is_superuser = True
-        user.save()
+        other_fields.setdefault('is_staff', True)
+        other_fields.setdefault('is_superuser', True)
+        other_fields.setdefault('is_active', True)
 
-        return user
+        if other_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must be assigned t is_staff=True.')
+        if other_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must be assigned to is_superuser=True.')
+
+        return self.create_user(email, user_name, first_name, last_name, password, **other_fields)

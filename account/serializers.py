@@ -5,23 +5,16 @@ from rest_framework.exceptions import AuthenticationFailed
 
 User = get_user_model()
 
-class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(max_length=68, min_length=4, write_only=True, label="password")
-
+class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'password']
-
-    def validate(self, attrs):
-        username = attrs.get('username', '')
-
-
-
-        if not username:
-            raise serializers.ValidationError("User must have a username")
-
-        return attrs
+        fields = ('email', 'user_name', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
-
+        password = validated_data.pop('password', None)
+        instance = self.Meta.model(**validated_data)
+        if password is not None:
+            instance.set_password(password)
+        instance.save()
+        return instance
