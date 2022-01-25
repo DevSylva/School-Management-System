@@ -6,15 +6,16 @@ from rest_framework.exceptions import AuthenticationFailed
 User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password1 = serializers.CharField(max_length=68, min_length=4, write_only=True)
-    password2 = serializers.CharField(max_length=68, min_length=4, write_only=True)
+    password = serializers.CharField(max_length=68, min_length=4, write_only=True, label="password")
 
     class Meta:
         model = User
-        fields = ['username', 'password1', 'password2']
+        fields = ['username', 'password']
 
     def validate(self, attrs):
         username = attrs.get('username', '')
+
+
 
         if not username:
             raise serializers.ValidationError("User must have a username")

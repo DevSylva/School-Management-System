@@ -18,10 +18,7 @@ class CustomUserManager(BaseUserManager):
 
     def create_superuser(self, username, password=None):
 
-        if password is None:
-            raise TypeError('Passwords should not be None')
-
-        user = self.create_user(username, password)
+        user = self.create_user(username, password=password)
         user.is_superuser = True
         user.save()
 

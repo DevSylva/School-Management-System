@@ -64,6 +64,9 @@ SWAGGER_SETTINGS = {
 
 
 REST_FRAMEWORK = {
+    'NON_FIELD_ERRORS_KEY': 'error',
+    'PAGE_SIZE': 10,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )

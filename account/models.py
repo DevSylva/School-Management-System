@@ -8,15 +8,16 @@ from django.contrib.auth import get_user_model
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=30, unique=True, null=True)
-    is_verified = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(default=timezone.now)
+    username      = models.CharField(max_length=30, unique=True, null=True)
+    is_verified   = models.BooleanField(default=False)
+    is_active     = models.BooleanField(default=True)
+    date_joined   = models.DateTimeField(default=timezone.now)
+
+
+    objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
-
-    objects = CustomUserManager()
 
     def __str__(self):
         return self.username
