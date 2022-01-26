@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 from .serializers import RegisterUserSerializer
+from .serializers import LoginUserSerializer
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect, HttpResponse
@@ -20,3 +21,13 @@ class CustomUserCreate(APIView):
             if newUser:
                 return Response(status=status.HTTP_201_CREATED)
         return Response(reg_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+
+    serializer_class = LoginUserSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

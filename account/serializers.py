@@ -6,10 +6,14 @@ from rest_framework.exceptions import AuthenticationFailed
 User = get_user_model()
 
 class RegisterUserSerializer(serializers.ModelSerializer):
+    email =serializers.EmailField(max_length=255, min_length=3)
+    user_name = serializers.CharField(max_length=40, min_length=3)
+    password = serializers.CharField(max_length=68, min_length=4, write_only=True)
+
     class Meta:
         model = User
         fields = ('email', 'user_name', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
+
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
@@ -18,3 +22,29 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+
+class LoginUserSerializer(serializers.ModelSerializer):
+    email=serializers.EmailField(max_length=255, min_length=3)
+    password=serializers.CharField(max_length=68, min_length=4, write_only=True)
+
+    class Meta:
+        model=User
+        fields=['email','password']
+
+    def validate(self, attrs):
+        email=attrs.get('email', '')
+        password = attrs.get('password', '')
+        filter_user_by_email = User.objects.filter(email=email)
+        user=auth.authenticate(email=email,password=password)
+
+        if not user:
+            raise AuthenticationFailed('Invalid Credentials, try again')
+        if not user.is_active:
+            raise AuthenticationFailed('Account Disabled, contact an Admin')
+
+        return {
+            'email': user.email,
+            'username': user.user_name,
+        }
+        return super().validate(attrs)
