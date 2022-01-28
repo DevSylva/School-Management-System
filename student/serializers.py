@@ -5,9 +5,9 @@ from rest_framework.exceptions import AuthenticationFailed
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
-    first_name      = serializers.CharField(max_length=16)
-    last_name       = serializers.CharField(max_length=16)
-    reg_number      = serializers.CharField(max_length=8)
+    first_name    = serializers.CharField(max_length=16)
+    last_name     = serializers.CharField(max_length=16)
+    reg_number    = serializers.CharField(max_length=8)
 
     class Meta:
         model = Student
@@ -20,6 +20,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
         if not reg_number:
             raise serializers.ValidationError('The student registration number should be provided.')
+            return reg_number.upper()
         return attrs
 
     def create(self, validated_data):
